@@ -5,6 +5,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import br.com.drbf.canvas.data.assets.AssetsRepository
+import br.com.drbf.canvas.domain.chart.usecase.GetBalanceUseCase
+import br.com.drbf.canvas.ui.chart.common.extensions.toChartEntry
+import br.com.drbf.canvas.ui.chart.pie.PieChartScreen
 import br.com.drbf.canvas.ui.home.HomeScreen
 import br.com.drbf.canvas.ui.progress.circle.CircleScreen
 import br.com.drbf.canvas.ui.progress.gauge.GaugeScreen
@@ -13,6 +17,8 @@ import kotlinx.serialization.Serializable
 
 sealed interface Destination {
 
+    @Serializable
+    data object ChartPieArc : Destination
     @Serializable
     data object ProgressCircle : Destination
     @Serializable
@@ -28,6 +34,8 @@ sealed interface Destination {
 @Composable
 fun MainNavGraph(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
+    val chartEntries =
+        GetBalanceUseCase(AssetsRepository()).invoke().entries.map { it.toChartEntry() }
 
     NavHost(
         navController = navController,
@@ -41,6 +49,14 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
         }
         composable<Destination.ProgressCircle> {
             CircleScreen(modifier = modifier)
+
+        }
+
+        composable<Destination.ChartPieArc> {
+            PieChartScreen(
+                modifier = modifier,
+                chartEntries = chartEntries
+                )
 
         }
         composable<Destination.ProgressGauge> {

@@ -22,6 +22,11 @@ fun HomeScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Button(onClick = {
+            navigate?.invoke(Destination.ChartPieArc)
+        }) {
+            Text(text = "Static Pie Chart")
+        }
+        Button(onClick = {
             navigate?.invoke(Destination.ProgressCircle)
         }) {
             Text(text = "Circle Progress")
