@@ -1,4 +1,4 @@
-package br.com.drbf.canvas.ui.common.component
+package br.com.drbf.canvas.ui.progress.common.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
