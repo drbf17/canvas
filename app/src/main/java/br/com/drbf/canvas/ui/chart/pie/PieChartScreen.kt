@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -33,7 +34,7 @@ import java.math.BigDecimal
 
 @Composable
 fun PieChartScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     chartEntries: List<PieChartEntry>,
     totalValue: BigDecimal
 ) {
@@ -47,7 +48,7 @@ fun PieChartScreen(
             .fillMaxSize()
             .padding(16.dp),
         state = listState,
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -56,7 +57,7 @@ fun PieChartScreen(
                 modifier = modifier,
                 charts = chartEntries,
                 totalValue = totalValue
-            ){
+            ) {
                 selectedItem = it
                 coroutineScope.launch {
                     chartEntries.indexOf(it).let { index ->
@@ -69,9 +70,9 @@ fun PieChartScreen(
 
         items(chartEntries) { chartEntry ->
             ChartEntryRoom(
-               modifier = modifier,
-               pieChartEntry =  chartEntry,
-                isSelected = selectedItem == chartEntry)
+                pieChartEntry = chartEntry,
+                isSelected = selectedItem == chartEntry
+            )
 
         }
     }
@@ -80,21 +81,19 @@ fun PieChartScreen(
 
 @Composable
 private fun ChartEntryRoom(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     pieChartEntry: PieChartEntry,
     isSelected: Boolean,
 ) {
-    
+
     var backgroundColor = if (isSelected) Color.Yellow else Color.Transparent
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(
                 color = backgroundColor,
                 shape = RoundedCornerShape(8.dp)
-            )
-
-        ,
+            ),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
