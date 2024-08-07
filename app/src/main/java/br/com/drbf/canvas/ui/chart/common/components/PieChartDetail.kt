@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -18,24 +17,22 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import br.com.drbf.canvas.ui.chart.common.ChartEntry
+import br.com.drbf.canvas.ui.chart.common.PieChartEntry
 
 @Composable
 
 fun PieChartDetail(
     modifier: Modifier,
-    color: Color,
-    accumulatedPercentage: Float,
-    percentage: Float,
+    pieChartEntry: PieChartEntry,
     size: Dp = 60.dp,
     strokeWidth: Dp = 4.dp
 ) {
 
     val textMeasurer = rememberTextMeasurer()
-    val textLayoutResult = textMeasurer.measure(text = AnnotatedString("$percentage%"))
+    val textLayoutResult =
+        textMeasurer.measure(text = AnnotatedString("${pieChartEntry.percentage}%"))
     val textSize = textLayoutResult.size
-    val startAngle = (accumulatedPercentage / 100) * 360
-    val sweepAngle = (percentage / 100) * 360
+
 
     Canvas(modifier = modifier
         .size(size)
@@ -55,9 +52,9 @@ fun PieChartDetail(
 
         )
         drawArc(
-            color = color,
-            startAngle = startAngle,
-            sweepAngle = sweepAngle,
+            color = pieChartEntry.color,
+            startAngle = pieChartEntry.startAngle,
+            sweepAngle = pieChartEntry.sweepAngle,
             useCenter = false,
             style = Stroke(
                 width = strokeWidth.toPx(),
@@ -68,7 +65,7 @@ fun PieChartDetail(
 
 
         drawText(
-            textMeasurer, "$percentage%",
+            textMeasurer, "${pieChartEntry.percentage}%",
             topLeft = Offset(
                 (this.size.width - textSize.width) / 2f,
                 (this.size.height - textSize.height) / 2f
@@ -83,8 +80,13 @@ fun PieChartDetail(
 fun PieChartDetailPreview() {
     PieChartDetail(
         modifier = Modifier,
-        color = Color.Red,
-        accumulatedPercentage = 10f,
-        percentage = 50f
+        pieChartEntry = PieChartEntry(
+            name = "Bitcoin",
+            value = 100.toBigDecimal(),
+            percentage = 25f,
+            startAngle = 0f,
+            sweepAngle = 90f,
+            color = Color.Blue
+        )
     )
 }

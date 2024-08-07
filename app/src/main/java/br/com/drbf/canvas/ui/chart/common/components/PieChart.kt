@@ -16,17 +16,18 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import br.com.drbf.canvas.ui.chart.common.ChartEntry
+import br.com.drbf.canvas.ui.chart.common.PieChartEntry
 
 @Composable
 
 fun PieChart(
     modifier: Modifier,
-    charts: List<ChartEntry>,
+    title: String = "Assets",
+    charts: List<PieChartEntry>,
     size: Dp = 300.dp,
     strokeWidth: Dp = 16.dp
 ) {
-    val title = "Assets"
+
     val textMeasurer = rememberTextMeasurer()
     val textLayoutResult = textMeasurer.measure(text = AnnotatedString(title))
     val textSize = textLayoutResult.size
@@ -36,17 +37,14 @@ fun PieChart(
         .background(Color.Transparent)
         .padding(12.dp), onDraw = {
 
-        var startAngle = 0f
-        var sweepAngle: Float
 
         charts.forEach {
 
-            sweepAngle = (it.percentage / 100) * 360
 
             drawArc(
                 color = it.color,
-                startAngle = startAngle,
-                sweepAngle = sweepAngle,
+                startAngle = it.startAngle,
+                sweepAngle = it.sweepAngle,
                 useCenter = false,
                 style = Stroke(
                     width = strokeWidth.toPx(),
@@ -55,7 +53,6 @@ fun PieChart(
                 )
             )
 
-            startAngle += sweepAngle
         }
 
         drawText(

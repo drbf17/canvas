@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import br.com.drbf.canvas.ui.chart.common.ChartEntry
+import br.com.drbf.canvas.ui.chart.common.PieChartEntry
 import br.com.drbf.canvas.ui.chart.common.components.PieChart
 import br.com.drbf.canvas.ui.chart.common.components.PieChartDetail
 import br.com.drbf.canvas.ui.theme.CanvasTheme
@@ -23,9 +23,8 @@ import br.com.drbf.canvas.ui.theme.CanvasTheme
 @Composable
 fun PieChartScreen(
     modifier: Modifier,
-    chartEntries: List<ChartEntry>
+    chartEntries: List<PieChartEntry>
 ) {
-    var accumulatedPercentage = 0f
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -36,8 +35,7 @@ fun PieChartScreen(
         item { PieChart(modifier = modifier, charts = chartEntries) }
 
         items(chartEntries) { chartEntry ->
-            ChartEntryRoom(modifier, chartEntry, accumulatedPercentage)
-            accumulatedPercentage += chartEntry.percentage
+            ChartEntryRoom(modifier, chartEntry)
 
         }
     }
@@ -47,8 +45,7 @@ fun PieChartScreen(
 @Composable
 private fun ChartEntryRoom(
     modifier: Modifier,
-    chartEntry: ChartEntry,
-    accumulatedPercentage: Float
+    pieChartEntry: PieChartEntry,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -57,13 +54,11 @@ private fun ChartEntryRoom(
     ) {
         PieChartDetail(
             modifier = modifier,
-            color = chartEntry.color,
-            accumulatedPercentage = accumulatedPercentage,
-            percentage = chartEntry.percentage,
+            pieChartEntry = pieChartEntry,
         )
         Spacer(modifier = Modifier.padding(8.dp))
 
-        Text(text = chartEntry.name)
+        Text(text = pieChartEntry.name)
     }
 }
 
@@ -74,9 +69,38 @@ fun PieChartPreview() {
         PieChartScreen(
             modifier = Modifier,
             chartEntries = listOf(
-                ChartEntry("Entry 1", "10".toBigDecimal(), 50f, Color.Red),
-                ChartEntry("Entry 2", "20".toBigDecimal(), 25f, Color.Blue),
-                ChartEntry("Entry 3", "70".toBigDecimal(), 25f, Color.Green)
+                PieChartEntry(
+                    name = "Bitcoin",
+                    value = 100.toBigDecimal(),
+                    percentage = 25f,
+                    startAngle = 0f,
+                    sweepAngle = 90f,
+                    color = Color.Blue
+                ),
+                PieChartEntry(
+                    name = "DroidCoin",
+                    value = 103.toBigDecimal(),
+                    percentage = 25f,
+                    startAngle = 90f,
+                    sweepAngle = 90f,
+                    color = Color.Yellow
+                ),
+                PieChartEntry(
+                    name = "FakeCoin",
+                    value = 103.toBigDecimal(),
+                    percentage = 25f,
+                    startAngle = 180f,
+                    sweepAngle = 90f,
+                    color = Color.Green
+                ),
+                PieChartEntry(
+                    name = "MyCoin",
+                    value = 103.toBigDecimal(),
+                    percentage = 25f,
+                    startAngle = 270f,
+                    sweepAngle = 90f,
+                    color = Color.Red
+                ),
             )
         )
     }
