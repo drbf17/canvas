@@ -2,14 +2,11 @@ package br.com.drbf.canvas.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import br.com.drbf.canvas.data.assets.AssetsRepository
-import br.com.drbf.canvas.domain.chart.entities.BalanceEntry
 import br.com.drbf.canvas.domain.chart.usecase.GetBalanceUseCase
-import br.com.drbf.canvas.ui.chart.common.PieChartEntry
 import br.com.drbf.canvas.ui.chart.common.toPieChartListEntry
 import br.com.drbf.canvas.ui.chart.pie.PieChartScreen
 import br.com.drbf.canvas.ui.home.HomeScreen
@@ -41,7 +38,9 @@ sealed interface Destination {
 @Composable
 fun MainNavGraph(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
-    val pieChartEntries = GetBalanceUseCase(AssetsRepository()).invoke().entries.toPieChartListEntry()
+
+    val balance = GetBalanceUseCase(AssetsRepository()).invoke()
+    val pieChartEntries = balance.entries.toPieChartListEntry()
 
     NavHost(
         navController = navController,
@@ -61,7 +60,8 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
         composable<Destination.ChartPieArc> {
             PieChartScreen(
                 modifier = modifier,
-                chartEntries = pieChartEntries
+                chartEntries = pieChartEntries,
+                totalValue = balance.totalAmount
             )
 
         }

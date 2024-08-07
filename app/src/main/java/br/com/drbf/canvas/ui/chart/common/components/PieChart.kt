@@ -2,6 +2,7 @@ package br.com.drbf.canvas.ui.chart.common.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -11,23 +12,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import br.com.drbf.canvas.ui.chart.common.PieChartEntry
+import br.com.drbf.canvas.ui.chart.common.utils.touchPointToAngle
+import java.math.BigDecimal
 
 @Composable
 
 fun PieChart(
     modifier: Modifier,
-    title: String = "Assets",
     charts: List<PieChartEntry>,
+    totalValue: BigDecimal,
     size: Dp = 300.dp,
-    strokeWidth: Dp = 16.dp
+    strokeWidth: Dp = 16.dp,
+    onClick: (PieChartEntry) -> Unit = {}
+
 ) {
 
+    val title = "Total: US$ $totalValue"
     val textMeasurer = rememberTextMeasurer()
     val textLayoutResult = textMeasurer.measure(text = AnnotatedString(title))
     val textSize = textLayoutResult.size
@@ -35,7 +42,24 @@ fun PieChart(
     Canvas(modifier = modifier
         .size(size)
         .background(Color.Transparent)
-        .padding(12.dp), onDraw = {
+        .padding(12.dp)
+        .pointerInput(Unit) {
+            detectTapGestures { offset ->
+                val clickedAngle = touchPointToAngle(
+                    width = size.toPx(),
+                    height = size.toPx(),
+                    touchX = offset.x,
+                    touchY = offset.y,
+                )
+                charts
+                    .firstOrNull { it.isMyAngle(clickedAngle.toFloat()) }
+                    ?.let {
+                        onClick(it)
+                        println("Clicked on ${it.name} - $clickedAngle")
+                    }
+
+            }
+        }, onDraw = {
 
 
         charts.forEach {

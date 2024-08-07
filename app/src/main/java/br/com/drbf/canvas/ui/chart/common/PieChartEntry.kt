@@ -11,7 +11,11 @@ data class PieChartEntry(
     val startAngle : Float,
     val sweepAngle: Float,
     val color: Color,
-)
+) {
+    fun isMyAngle(angle: Float): Boolean {
+        return angle in startAngle..(startAngle + sweepAngle)
+    }
+}
 
 fun List<BalanceEntry>.toPieChartListEntry(
     colors: List<Color> = listOf(

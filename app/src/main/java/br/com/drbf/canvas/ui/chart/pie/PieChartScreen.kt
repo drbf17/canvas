@@ -1,6 +1,8 @@
 package br.com.drbf.canvas.ui.chart.pie
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,8 +10,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,23 +28,50 @@ import br.com.drbf.canvas.ui.chart.common.PieChartEntry
 import br.com.drbf.canvas.ui.chart.common.components.PieChart
 import br.com.drbf.canvas.ui.chart.common.components.PieChartDetail
 import br.com.drbf.canvas.ui.theme.CanvasTheme
+import kotlinx.coroutines.launch
+import java.math.BigDecimal
 
 @Composable
 fun PieChartScreen(
     modifier: Modifier,
-    chartEntries: List<PieChartEntry>
+    chartEntries: List<PieChartEntry>,
+    totalValue: BigDecimal
 ) {
 
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+    var selectedItem by remember { mutableStateOf<PieChartEntry?>(null) }
+
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        state = listState,
         verticalArrangement = Arrangement.spacedBy(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        item { PieChart(modifier = modifier, charts = chartEntries) }
+        item {
+            PieChart(
+                modifier = modifier,
+                charts = chartEntries,
+                totalValue = totalValue
+            ){
+                selectedItem = it
+                coroutineScope.launch {
+                    chartEntries.indexOf(it).let { index ->
+                        listState.animateScrollToItem(index)
+                    }
+
+                }
+            }
+        }
 
         items(chartEntries) { chartEntry ->
-            ChartEntryRoom(modifier, chartEntry)
+            ChartEntryRoom(
+               modifier = modifier,
+               pieChartEntry =  chartEntry,
+                isSelected = selectedItem == chartEntry)
 
         }
     }
@@ -46,9 +82,19 @@ fun PieChartScreen(
 private fun ChartEntryRoom(
     modifier: Modifier,
     pieChartEntry: PieChartEntry,
+    isSelected: Boolean,
 ) {
+    
+    var backgroundColor = if (isSelected) Color.Yellow else Color.Transparent
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = backgroundColor,
+                shape = RoundedCornerShape(8.dp)
+            )
+
+        ,
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -58,7 +104,11 @@ private fun ChartEntryRoom(
         )
         Spacer(modifier = Modifier.padding(8.dp))
 
-        Text(text = pieChartEntry.name)
+        Column {
+            Text(text = pieChartEntry.name)
+            Text(text = "US$ ${pieChartEntry.value}")
+        }
+
     }
 }
 
@@ -101,7 +151,8 @@ fun PieChartPreview() {
                     sweepAngle = 90f,
                     color = Color.Red
                 ),
-            )
+            ),
+            totalValue = 409.94.toBigDecimal()
         )
     }
 
