@@ -1,8 +1,9 @@
 package br.com.drbf.canvas.ui.home
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,46 +15,22 @@ import br.com.drbf.canvas.ui.Destination
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    navigate: ((Any) -> Unit)? = null) {
-    Column (
+    navigate: ((Any) -> Unit)? = null
+) {
+    LazyColumn(
         modifier = modifier
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Button(onClick = {
-            navigate?.invoke(Destination.ChartPieArc)
-        }) {
-            Text(text = "Static Pie Chart")
+        items(actions) { action ->
+            Button(onClick = {
+                navigate?.invoke(action.destination)
+            }) {
+                Text(text = action.title)
+            }
         }
-        Button(onClick = {
-            navigate?.invoke(Destination.Gauge)
-        }) {
-            Text(text = "Static Pie Chart")
-        }
-        Button(onClick = {
-            navigate?.invoke(Destination.ProgressCircle)
-        }) {
-            Text(text = "Circle Progress")
-        }
-        Button(onClick = {
-            navigate?.invoke(Destination.ProgressGauge)
-        }) {
-            Text(text = "Gauge Progress")
-        }
-        Button(onClick = {
-            navigate?.invoke(Destination.ProgressTriangule)
-        }) {
-            Text(text = "Triangule Progress")
-        }
-        Button(onClick = {
-            navigate?.invoke(Destination.SliderArc)
-        }) {
-            Text(text = "Arc Slider")
-        }
-
     }
-
 }
 
 @Preview(showBackground = true)
@@ -61,3 +38,17 @@ fun HomeScreen(
 fun HomeScreenPreview() {
     HomeScreen()
 }
+
+data class Action(
+    val title: String,
+    val destination: Destination
+)
+
+private val actions = listOf(
+    Action("Static Pie Chart", Destination.ChartPieArc),
+    Action("Gauge", Destination.Gauge),
+    Action("Circle Progress", Destination.ProgressCircle),
+    Action("Gauge Progress", Destination.ProgressGauge),
+    Action("Triangule Progress", Destination.ProgressTriangule),
+    Action("Arc Slider", Destination.SliderArc)
+)
