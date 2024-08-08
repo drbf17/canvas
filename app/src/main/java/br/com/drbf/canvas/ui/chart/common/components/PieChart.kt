@@ -19,7 +19,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import br.com.drbf.canvas.ui.chart.common.PieChartEntry
-import br.com.drbf.canvas.ui.chart.common.utils.touchPointToAngle
+import br.com.drbf.canvas.ui.common.utils.touchPointTo360Angle
 import java.math.BigDecimal
 
 @Composable
@@ -45,7 +45,7 @@ fun PieChart(
         .padding(12.dp)
         .pointerInput(Unit) {
             detectTapGestures { offset ->
-                val clickedAngle = touchPointToAngle(
+                val clickedAngle = touchPointTo360Angle(
                     width = size.toPx(),
                     height = size.toPx(),
                     touchX = offset.x,

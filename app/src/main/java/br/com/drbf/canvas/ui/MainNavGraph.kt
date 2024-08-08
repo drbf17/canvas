@@ -13,6 +13,7 @@ import br.com.drbf.canvas.ui.home.HomeScreen
 import br.com.drbf.canvas.ui.progress.circle.CircleScreen
 import br.com.drbf.canvas.ui.progress.gauge.GaugeScreen
 import br.com.drbf.canvas.ui.progress.triangule.TrianguleScreen
+import br.com.drbf.canvas.ui.slider.arc.ArcSliderScreen
 import kotlinx.serialization.Serializable
 
 sealed interface Destination {
@@ -31,6 +32,9 @@ sealed interface Destination {
 
     @Serializable
     data object ProgressTriangule : Destination
+
+    @Serializable
+    data object SliderArc : Destination
 
 
 }
@@ -71,6 +75,11 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
         }
         composable<Destination.ProgressTriangule> {
             TrianguleScreen(modifier = modifier)
+
+        }
+
+        composable<Destination.SliderArc> {
+            ArcSliderScreen(modifier = modifier)
 
         }
     }

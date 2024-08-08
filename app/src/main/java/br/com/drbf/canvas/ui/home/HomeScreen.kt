@@ -41,6 +41,11 @@ fun HomeScreen(
         }) {
             Text(text = "Triangule Progress")
         }
+        Button(onClick = {
+            navigate?.invoke(Destination.SliderArc)
+        }) {
+            Text(text = "Arc Slider")
+        }
 
     }
 
