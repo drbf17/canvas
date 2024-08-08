@@ -27,6 +27,11 @@ fun HomeScreen(
             Text(text = "Static Pie Chart")
         }
         Button(onClick = {
+            navigate?.invoke(Destination.Gauge)
+        }) {
+            Text(text = "Static Pie Chart")
+        }
+        Button(onClick = {
             navigate?.invoke(Destination.ProgressCircle)
         }) {
             Text(text = "Circle Progress")

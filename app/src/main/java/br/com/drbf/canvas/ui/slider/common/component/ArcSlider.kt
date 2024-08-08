@@ -39,8 +39,7 @@ fun ArcSlider(
 
     var progressAngle by remember {
         mutableFloatStateOf(
-            percentageToAngle(
-                percentage = startPercentage,
+            startPercentage.percentageToAngle(
                 maxAngle = 180f
             )
         )

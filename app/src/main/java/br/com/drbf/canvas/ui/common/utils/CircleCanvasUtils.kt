@@ -66,9 +66,8 @@ fun figureOutYfromAngle(
     return radius * sin(Math.PI * 2 * angle / 360).toFloat()
 }
 
-fun percentageToAngle(
-    percentage: Float,
+fun Float.percentageToAngle(
     maxAngle: Float = 360f
 ): Float {
-    return percentage / 100 * maxAngle
+    return this / 100 * maxAngle
 }

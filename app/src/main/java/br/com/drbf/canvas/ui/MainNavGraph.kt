@@ -9,9 +9,10 @@ import br.com.drbf.canvas.data.assets.AssetsRepository
 import br.com.drbf.canvas.domain.chart.usecase.GetBalanceUseCase
 import br.com.drbf.canvas.ui.chart.common.toPieChartListEntry
 import br.com.drbf.canvas.ui.chart.pie.PieChartScreen
+import br.com.drbf.canvas.ui.gauge.GaugeScreen
 import br.com.drbf.canvas.ui.home.HomeScreen
 import br.com.drbf.canvas.ui.progress.circle.CircleScreen
-import br.com.drbf.canvas.ui.progress.gauge.GaugeScreen
+import br.com.drbf.canvas.ui.progress.gauge.GaugeProgressScreen
 import br.com.drbf.canvas.ui.progress.triangule.TrianguleScreen
 import br.com.drbf.canvas.ui.slider.arc.ArcSliderScreen
 import kotlinx.serialization.Serializable
@@ -22,13 +23,17 @@ sealed interface Destination {
     data object ChartPieArc : Destination
 
     @Serializable
+    data object Home : Destination
+
+    @Serializable
+    data object Gauge : Destination
+
+    @Serializable
     data object ProgressCircle : Destination
 
     @Serializable
     data object ProgressGauge : Destination
 
-    @Serializable
-    data object Home : Destination
 
     @Serializable
     data object ProgressTriangule : Destination
@@ -56,6 +61,10 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
             }
 
         }
+        composable<Destination.Gauge> {
+            GaugeScreen()
+        }
+
         composable<Destination.ProgressCircle> {
             CircleScreen(modifier = modifier)
 
@@ -70,7 +79,7 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
 
         }
         composable<Destination.ProgressGauge> {
-            GaugeScreen(modifier = modifier)
+            GaugeProgressScreen(modifier = modifier)
 
         }
         composable<Destination.ProgressTriangule> {
