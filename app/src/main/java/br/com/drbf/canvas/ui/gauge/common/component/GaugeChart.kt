@@ -36,41 +36,43 @@ private const val animationDuration = 800
 @Composable
 fun GaugeChart(
     modifier: Modifier = Modifier,
-    percentValue: Int,
-    primaryColor: Color,
+    value: Float,
+    minValue: Float = 0f,
+    maxValue: Float = 100f,
+    needleColor: Color,
     animated: Boolean = true
 ) {
 
-    assert(percentValue in 0..100) { "percent must be between 0 - 100" }
+    assert(value in minValue..maxValue) { "percent must be between $minValue - $maxValue" }
+    val percent = value / (maxValue - minValue) * 100f
 
-    // animate indicator position on composition
     val progress = remember { Animatable(initialValue = 0f) }
-    LaunchedEffect(percentValue) {
+    LaunchedEffect(percent) {
         progress.animateTo(
-            targetValue = percentValue.toFloat(),
+            targetValue = percent,
             animationSpec = tween(if (animated) animationDuration else 0)
         )
     }
 
     val density = LocalDensity.current
-    val needleBaseSize = with(density) { 1.dp.toPx() }
-    val strokeWidth = with(density) { 6.dp.toPx() }
-    val textFontSize = with(density) { 16.dp.toPx() }
-    val fontPadding = with(density) { 5.dp.toPx() }
+    val needleBaseSize = density.run { 1.dp.toPx() }
+    val arcStrokeWidth = density.run { 6.dp.toPx() }
+    val textFontSize = density.run { 16.dp.toPx() }
+    val fontPadding = density.run { 5.dp.toPx() }
 
-    val gaugeDegrees = 180
-    val startAngle = 180f
+    val arcMaxDegrees = 180
+    val arcStartAngle = 180f
 
-    val needlePaint = remember { Paint().apply { color = primaryColor } }
+    val needlePaint = remember { Paint().apply { color = needleColor } }
     val textPaint = remember {
         android.graphics.Paint().apply {
-            color = primaryColor.toArgb()
+            color = needleColor.toArgb()
             textSize = textFontSize
             textAlign = android.graphics.Paint.Align.CENTER
         }
     }
 
-    val brush = Brush.horizontalGradient(
+    val arcStrokeBrush = Brush.horizontalGradient(
         0.3f to Color.Green,
         0.6f to Color.Yellow,
         0.9f to Color.Red,
@@ -79,8 +81,8 @@ fun GaugeChart(
     BoxWithConstraints(modifier = modifier.padding(16.dp), contentAlignment = Alignment.Center) {
 
         val canvasSize = min(constraints.maxWidth, constraints.maxHeight)
+        val canvasSizeDp = density.run { canvasSize.toDp() }
         val size = Size(canvasSize.toFloat(), canvasSize.toFloat())
-        val canvasSizeDp = with(density) { canvasSize.toDp() }
         val width = size.width
         val height = size.height
         val center = Offset(width / 2, height / 2)
@@ -90,17 +92,15 @@ fun GaugeChart(
             modifier = Modifier.size(canvasSizeDp),
             onDraw = {
 
-
-                gauge(brush, startAngle, gaugeDegrees, size, strokeWidth)
-
-                needle(
+                drawArc(arcStrokeBrush, arcStartAngle, arcMaxDegrees, size, arcStrokeWidth)
+                drawNeedle(
                     progress,
-                    gaugeDegrees,
+                    arcMaxDegrees,
                     center,
                     needleBaseSize,
                     width,
                     needlePaint,
-                    percentValue,
+                    percent,
                     textY,
                     textPaint
                 )
@@ -111,14 +111,14 @@ fun GaugeChart(
 }
 
 
-private fun DrawScope.needle(
+private fun DrawScope.drawNeedle(
     progress: Animatable<Float, AnimationVector1D>,
-    gaugeDegrees: Int,
+    arcMaxDegrees: Int,
     center: Offset,
     needleBaseSize: Float,
     width: Float,
     needlePaint: Paint,
-    percentValue: Int,
+    percent: Float,
     textY: Float,
     textPaint: android.graphics.Paint
 ) {
@@ -129,7 +129,7 @@ private fun DrawScope.needle(
 
         // rotate canvas based on progress, to move the needle
         canvas.rotate(
-            degrees = progress.value.percentageToAngle(maxAngle = gaugeDegrees.toFloat()),
+            degrees = progress.value.percentageToAngle(maxAngle = arcMaxDegrees.toFloat()),
             pivotX = center.x,
             pivotY = center.y
         )
@@ -149,20 +149,20 @@ private fun DrawScope.needle(
         canvas.restore()
 
 
-        needleLabel(canvas, percentValue, center, textY, textPaint)
+        drawNeedleLabel(canvas, percent, center, textY, textPaint)
 
     }
 }
 
-private fun needleLabel(
+private fun drawNeedleLabel(
     canvas: Canvas,
-    percentValue: Int,
+    percent: Float,
     center: Offset,
     textY: Float,
     textPaint: android.graphics.Paint
 ) {
     canvas.nativeCanvas.drawText(
-        percentValue.toString(),
+        percent.toInt().toString(),
         center.x,
         textY,
         textPaint
@@ -170,7 +170,7 @@ private fun needleLabel(
 }
 
 
-private fun DrawScope.gauge(
+private fun DrawScope.drawArc(
     brush: Brush,
     startAngle: Float,
     gaugeDegrees: Int,

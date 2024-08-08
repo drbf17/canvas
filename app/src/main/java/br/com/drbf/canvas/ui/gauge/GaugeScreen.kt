@@ -26,14 +26,14 @@ import kotlinx.coroutines.launch
 fun GaugeScreen(modifier: Modifier = Modifier) {
 
     val scope = rememberCoroutineScope()
-    var percents by remember { mutableStateOf(listOf(10, 40, 90)) }
+    var percents by remember { mutableStateOf(listOf(10f, 40f, 90f)) }
 
     LaunchedEffect(Unit) {
         scope.launch {
             while (true) {
                 delay(3 * 1000)
                 percents = percents.map {
-                    (0..100).random()
+                    (0..100).random().toFloat()
                 }
             }
         }
@@ -47,8 +47,8 @@ fun GaugeScreen(modifier: Modifier = Modifier) {
     ) {
         items(percents) { percent ->
             GaugeChart(
-                percentValue = percent,
-                primaryColor = MaterialTheme.colorScheme.primary
+                value = percent,
+                needleColor = MaterialTheme.colorScheme.primary
             )
         }
     }
