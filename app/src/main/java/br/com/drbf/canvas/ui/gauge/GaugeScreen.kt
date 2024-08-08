@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,11 +28,13 @@ fun GaugeScreen(modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
     var percents by remember { mutableStateOf(listOf(10, 40, 90)) }
 
-    scope.launch {
-        while (true) {
-            delay(5 * 1000)
-            percents = percents.map {
-                (0..100).random()
+    LaunchedEffect(Unit) {
+        scope.launch {
+            while (true) {
+                delay(3 * 1000)
+                percents = percents.map {
+                    (0..100).random()
+                }
             }
         }
     }
