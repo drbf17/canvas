@@ -7,7 +7,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import br.com.drbf.canvas.data.assets.AssetsRepository
 import br.com.drbf.canvas.domain.chart.usecase.GetBalanceUseCase
-import br.com.drbf.canvas.ui.chart.common.toPieChartListEntry
+import br.com.drbf.canvas.ui.chart.common.components.pie.toPieChartListEntry
+import br.com.drbf.canvas.ui.chart.line.LineChartScreen
 import br.com.drbf.canvas.ui.chart.pie.PieChartScreen
 import br.com.drbf.canvas.ui.gauge.GaugeScreen
 import br.com.drbf.canvas.ui.home.HomeScreen
@@ -21,6 +22,8 @@ sealed interface Destination {
 
     @Serializable
     data object ChartPieArc : Destination
+    @Serializable
+    data object ChartLine : Destination
 
     @Serializable
     data object Home : Destination
@@ -50,6 +53,7 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
 
     val balance = GetBalanceUseCase(AssetsRepository()).invoke()
     val pieChartEntries = balance.entries.toPieChartListEntry()
+    val prices = AssetsRepository().prices
 
     NavHost(
         navController = navController,
@@ -61,6 +65,21 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
             }
 
         }
+        composable<Destination.ChartPieArc> {
+            PieChartScreen(
+                modifier = modifier,
+                chartEntries = pieChartEntries,
+                totalValue = balance.totalAmount
+            )
+
+        }
+        composable<Destination.ChartLine> {
+          LineChartScreen(
+              modifier = modifier,
+              prices = prices
+          )
+
+        }
         composable<Destination.Gauge> {
             GaugeScreen()
         }
@@ -70,14 +89,6 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
 
         }
 
-        composable<Destination.ChartPieArc> {
-            PieChartScreen(
-                modifier = modifier,
-                chartEntries = pieChartEntries,
-                totalValue = balance.totalAmount
-            )
-
-        }
         composable<Destination.ProgressGauge> {
             GaugeProgressScreen(modifier = modifier)
 

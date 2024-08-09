@@ -1,4 +1,4 @@
-package br.com.drbf.canvas.ui.chart.common.components
+package br.com.drbf.canvas.ui.chart.common.components.pie
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -18,13 +18,12 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import br.com.drbf.canvas.ui.chart.common.PieChartEntry
 import br.com.drbf.canvas.ui.common.utils.touchPointTo360Angle
 import java.math.BigDecimal
 
 @Composable
 
-fun PieChart(
+fun PieChartComponent(
     modifier: Modifier,
     charts: List<PieChartEntry>,
     totalValue: BigDecimal,

@@ -1,4 +1,4 @@
-package br.com.drbf.canvas.ui.chart.common
+package br.com.drbf.canvas.ui.chart.common.components.pie
 
 import androidx.compose.ui.graphics.Color
 import br.com.drbf.canvas.domain.chart.entities.BalanceEntry

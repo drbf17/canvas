@@ -1,4 +1,4 @@
-package br.com.drbf.canvas.ui.chart.common.components
+package br.com.drbf.canvas.ui.chart.common.components.pie
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -17,11 +17,10 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import br.com.drbf.canvas.ui.chart.common.PieChartEntry
 
 @Composable
 
-fun PieChartDetail(
+fun PieChartDetailComponent(
     modifier: Modifier,
     pieChartEntry: PieChartEntry,
     size: Dp = 60.dp,
@@ -78,7 +77,7 @@ fun PieChartDetail(
 @Preview(showBackground = true)
 @Composable
 fun PieChartDetailPreview() {
-    PieChartDetail(
+    PieChartDetailComponent(
         modifier = Modifier,
         pieChartEntry = PieChartEntry(
             name = "Bitcoin",

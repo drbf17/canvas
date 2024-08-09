@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -25,9 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import br.com.drbf.canvas.ui.chart.common.PieChartEntry
-import br.com.drbf.canvas.ui.chart.common.components.PieChart
-import br.com.drbf.canvas.ui.chart.common.components.PieChartDetail
+import br.com.drbf.canvas.ui.chart.common.components.pie.PieChartEntry
+import br.com.drbf.canvas.ui.chart.common.components.pie.PieChartComponent
+import br.com.drbf.canvas.ui.chart.common.components.pie.PieChartDetailComponent
 import br.com.drbf.canvas.ui.theme.CanvasTheme
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -53,7 +52,7 @@ fun PieChartScreen(
     ) {
 
         item {
-            PieChart(
+            PieChartComponent(
                 modifier = modifier,
                 charts = chartEntries,
                 totalValue = totalValue
@@ -86,7 +85,7 @@ private fun ChartEntryRoom(
     isSelected: Boolean,
 ) {
 
-    var backgroundColor = if (isSelected) Color.Yellow else Color.Transparent
+    val backgroundColor = if (isSelected) Color.Yellow else Color.Transparent
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -97,7 +96,7 @@ private fun ChartEntryRoom(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        PieChartDetail(
+        PieChartDetailComponent(
             modifier = modifier,
             pieChartEntry = pieChartEntry,
         )

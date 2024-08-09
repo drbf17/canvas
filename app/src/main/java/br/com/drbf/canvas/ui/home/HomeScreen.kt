@@ -45,7 +45,8 @@ data class Action(
 )
 
 private val actions = listOf(
-    Action("Static Pie Chart", Destination.ChartPieArc),
+    Action("Pie Chart", Destination.ChartPieArc),
+    Action("Line Chart", Destination.ChartLine),
     Action("Gauge", Destination.Gauge),
     Action("Circle Progress", Destination.ProgressCircle),
     Action("Gauge Progress", Destination.ProgressGauge),
