@@ -7,7 +7,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import br.com.drbf.canvas.data.assets.AssetsRepository
 import br.com.drbf.canvas.domain.chart.usecase.GetBalanceUseCase
+import br.com.drbf.canvas.ui.chart.bar.BarChartScreen
 import br.com.drbf.canvas.ui.chart.common.components.pie.toPieChartListEntry
+import br.com.drbf.canvas.ui.chart.horizontalbar.HorizontalBarScreen
 import br.com.drbf.canvas.ui.chart.line.LineChartScreen
 import br.com.drbf.canvas.ui.chart.pie.PieChartScreen
 import br.com.drbf.canvas.ui.gauge.GaugeScreen
@@ -20,10 +22,19 @@ import kotlinx.serialization.Serializable
 
 sealed interface Destination {
 
+
+
     @Serializable
-    data object ChartPieArc : Destination
+    data object ChartBar : Destination
+
+    @Serializable
+    data object ChartBarHorizontal : Destination
+
     @Serializable
     data object ChartLine : Destination
+
+    @Serializable
+    data object ChartPieArc : Destination
 
     @Serializable
     data object Home : Destination
@@ -65,19 +76,31 @@ fun MainNavGraph(modifier: Modifier = Modifier) {
             }
 
         }
+        composable<Destination.ChartBar> {
+            BarChartScreen(
+                modifier = modifier,
+            )
+
+        }
+        composable<Destination.ChartBarHorizontal> {
+            HorizontalBarScreen(
+                modifier = modifier,
+            )
+
+        }
+        composable<Destination.ChartLine> {
+            LineChartScreen(
+                modifier = modifier,
+                prices = prices
+            )
+
+        }
         composable<Destination.ChartPieArc> {
             PieChartScreen(
                 modifier = modifier,
                 chartEntries = pieChartEntries,
                 totalValue = balance.totalAmount
             )
-
-        }
-        composable<Destination.ChartLine> {
-          LineChartScreen(
-              modifier = modifier,
-              prices = prices
-          )
 
         }
         composable<Destination.Gauge> {
