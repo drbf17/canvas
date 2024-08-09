@@ -11,9 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -21,6 +19,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -44,11 +45,13 @@ fun LineChartComponent(
     val pointRadius = density.run { pointRadiusDp.toPx() }
 
     val lineIndex = remember { Animatable(initialValue = 0f) }
-    val points : List<LineChartPoint> by remember {
+    val points: List<LineChartPoint> by remember {
         derivedStateOf {
             lineChartModel.points.take(lineIndex.value.toInt())
         }
     }
+
+    val textMeasurer = rememberTextMeasurer()
 
     LaunchedEffect(lineChartModel) {
         lineIndex.animateTo(
@@ -58,9 +61,7 @@ fun LineChartComponent(
     }
 
     Box(
-        modifier = modifier
-            .padding(8.dp),
-        contentAlignment = Alignment.Center
+        modifier = modifier.padding(8.dp), contentAlignment = Alignment.Center
     ) {
 
         Canvas(
@@ -91,6 +92,17 @@ fun LineChartComponent(
                         center = Offset(offset.x, size.height - offset.y)
                     )
                 }
+
+                val textSize = textMeasurer.measure(text = AnnotatedString(point.labelY)).size
+
+                drawText(
+                    textMeasurer, point.labelY,
+                    topLeft = Offset(
+                        point.offset.x - textSize.width / 2,
+                        size.height - point.offset.y - 5f
+                    ),
+                )
+                
             }
         }
     }
@@ -102,11 +114,8 @@ fun LineChartComponent(
 fun LineChartPreview() {
     CanvasTheme {
         LineChartComponent(
-            modifier = Modifier,
-            lineChartModel = LineChartModel(
-                widthDp = 300.dp,
-                heightDp = 300.dp,
-                points = listOf(
+            modifier = Modifier, lineChartModel = LineChartModel(
+                widthDp = 300.dp, heightDp = 300.dp, points = listOf(
                     LineChartPoint(
                         offset = Offset(0f, 0f),
                         labelX = "0",
